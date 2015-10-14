@@ -38,7 +38,10 @@ setup(
     long_description='\n'.join([open('README.rst').read(), open('CHANGELOG').read()]),
     author=status.__author__,
     author_email=status.__email__,
+    maintainer=status.__author__,
+    maintainer_email=status.__email__,
     url=status.__url__,
+    download_url=status.__url__,
     packages=[
         'status',
     ],
