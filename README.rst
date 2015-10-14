@@ -2,7 +2,7 @@
 Django Status
 =============
 
-:Version: 1.0.1
+:Version: 1.0.2
 :Status: Production/Stable
 :Author: José Antonio Perdiguero López
 
@@ -34,8 +34,8 @@ Quick start
 Check Providers
 ===============
 Django Status provides a mechanism to add new custom check functions through **check providers**. Each check provider
-will generate a new API method with an URL that uses the name of the provider. These functions must accept *args and
-**kwargs and will return a JSON-serializable object through json.dumps() method, for example a ping function::
+will generate a new API method with an URL that uses the name of the provider. These functions must accept \*args and
+\*\*kwargs and will return a JSON-serializable object through json.dumps() method, for example a ping function::
 
     def ping(*args, **kwargs):
         return {'pong': True}

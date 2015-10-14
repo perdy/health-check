@@ -47,7 +47,7 @@ setup(
     ],
     include_package_data=True,
     install_requires=requires,
-    license=status.__license__,
+    license=open('LICENSE').read(),
     zip_safe=False,
     keywords='python, django, database, cache, celery, status, check',
     classifiers=[
