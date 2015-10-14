@@ -28,7 +28,7 @@ class JSONResponseMixin(object):
         """
         Returns an object that will be serialized as JSON by json.dumps().
         """
-        return context
+        return context or {}
 
 
 class JSONView(JSONResponseMixin, View):

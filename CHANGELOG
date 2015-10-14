@@ -2,3 +2,11 @@ Changes
 =======
 v0.1.0 - 8/10/2015
  * Initial release.
+
+v1.0.0 - 14/10/2015
+ * Database check.
+ * Database stats.
+ * Cache check.
+ * Celery check.
+ * Celery stats.
+ * First stable version.

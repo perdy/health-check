@@ -24,9 +24,16 @@ DATABASES = {
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     },
+}
 
-    'audit': {
-        'ENGINE': '',
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'default-cache',
+    },
+    'demo': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'demo-cache',
     }
 }
 
@@ -170,5 +177,7 @@ INSTALLED_APPS = (
 #     }
 # }
 
-STATUS_CELERY_APP = 'Test'
+STATUS_CELERY_WORKERS = (
+    'demo_worker',
+)
 

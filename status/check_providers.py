@@ -2,11 +2,117 @@
 """
 Built-in check providers.
 """
+import datetime
+from django.db import connections, OperationalError
+from django.core.cache import caches as django_caches, InvalidCacheBackendError
+from status.settings import CACHES
+
+from status.utils import FakeChecker
+
+try:
+    from celery.task import control
+
+    celery_inspect = control.inspect()
+except ImportError:
+    celery_inspect = FakeChecker()
 
 
 def ping(*args, **kwargs):
-    return {'ok': 'pong'}
+    """Check if current application is running.
+
+    :return: Pong response.
+    """
+
+    return {'pong': True}
 
 
-def celery(*args, **kwargs):
-    return {'ok': kwargs['app']}
+def celery(workers, *args, **kwargs):
+    """Check if given celery workers are running.
+
+    :param workers: List of workers to be checked.
+    :return: Status of each worker.
+    """
+    try:
+        active_workers = celery_inspect.ping()
+        workers_status = {w: w in active_workers.keys() for w in workers}
+    except AttributeError:
+        workers_status = None
+
+    return workers_status
+
+
+def celery_stats(workers, *args, **kwargs):
+    """Retrieve the stats data of given celery workers.
+
+    :param workers: List of workers.
+    :return: Stats data of each worker.
+    """
+    try:
+        workers_stats = {k: v for k, v in celery_inspect.stats().items() if k in workers}
+    except AttributeError:
+        workers_stats = None
+
+    return workers_stats
+
+
+def databases(*args, **kwargs):
+    """Check database status.
+
+    :return: Status of each database.
+    """
+    status = {}
+    for connection in connections.all():
+        try:
+            connection.connect()
+            status[connection.alias] = connection.is_usable()
+        except OperationalError:
+            status[connection.alias] = False
+
+    return status
+
+
+def databases_stats(*args, **kwargs):
+    """Retrieve the stats data of each database.
+
+    :return: Stats data of each database.
+    """
+    stats = {}
+    for connection in connections.all():
+        try:
+            connection.connect()
+        except OperationalError:
+            is_usable = False
+        else:
+            is_usable = connection.is_usable()
+        finally:
+            stats[connection.alias] = {
+                'vendor': connection.vendor,
+                'is_usable': is_usable,
+                'allow_thread_sharing': connection.allow_thread_sharing,
+                'autocommit': connection.autocommit,
+                'commit_on_exit': connection.commit_on_exit,
+                'in_atomic_block': connection.in_atomic_block,
+                'settings': {k: v for k, v in connection.settings_dict.items() if k not in ('USER', 'PASSWORD')}
+            }
+
+    return stats
+
+
+def caches(*args, **kwargs):
+    """Check caches status.
+
+    :return: Status of each cache.
+    """
+    caches_aliases = CACHES.keys()
+    value = datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+
+    status = {}
+    for alias in caches_aliases:
+        try:
+            cache = django_caches[alias]
+            cache.set('django_status_test_cache', value)
+            status[alias] = True
+        except InvalidCacheBackendError:
+            status[alias] = False
+
+    return status

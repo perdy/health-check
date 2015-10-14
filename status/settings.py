@@ -1,21 +1,30 @@
 # -*- coding: utf-8 -*-
 """
-Module description
+Settings.
 """
 
 try:
     from django.conf import settings
-    DEBUG = settings.DEBUG
+    INSTALLED_APPS = settings.INSTALLED_APPS
+    CACHES = settings.CACHES
 except (ImportError, AttributeError):
     settings = None
+    INSTALLED_APPS = ()
+    CACHES = {}
 
 # Celery application
-CELERY_APP = getattr(settings, 'STATUS_CELERY_APP', None)
+CELERY_WORKERS = getattr(settings, 'STATUS_CELERY_WORKERS', ())
 
 # Tuple of application name, provider, args, kwargs
 CHECK_PROVIDERS = (
     ('ping', 'status.check_providers.ping', None, None),
+    ('databases', 'status.check_providers.databases', None, None),
+    ('databases/stats', 'status.check_providers.databases_stats', None, None),
+    ('caches', 'status.check_providers.caches', None, None),
 )
-if CELERY_APP:
-    CHECK_PROVIDERS += (('celery', 'status.check_providers.celery', None, {'app': CELERY_APP}), )
+if CELERY_WORKERS:
+    CHECK_PROVIDERS += (
+        ('celery', 'status.check_providers.celery', None, {'workers': CELERY_WORKERS}),
+        ('celery/stats', 'status.check_providers.celery_stats', None, {'workers': CELERY_WORKERS}),
+    )
 CHECK_PROVIDERS += getattr(settings, 'STATUS_CHECK_PROVIDERS', ())
