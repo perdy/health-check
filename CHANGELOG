@@ -1,5 +1,8 @@
 Changes
 =======
+v1.0.3 - 14/10/2015
+ * Fix checkers for celery and celery stats. Now displays if a worker isn't running.
+
 v1.0.2 - 14/10/2015
  * Update README and meta info.
 

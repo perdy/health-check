@@ -33,8 +33,9 @@ def celery(workers, *args, **kwargs):
     :return: Status of each worker.
     """
     try:
-        active_workers = celery_inspect.ping()
-        workers_status = {w: w in active_workers.keys() for w in workers}
+        ping_response = celery_inspect.ping() or {}
+        active_workers = ping_response.keys()
+        workers_status = {w: w in active_workers for w in workers}
     except AttributeError:
         workers_status = None
 
@@ -48,7 +49,8 @@ def celery_stats(workers, *args, **kwargs):
     :return: Stats data of each worker.
     """
     try:
-        workers_stats = {k: v for k, v in celery_inspect.stats().items() if k in workers}
+        active_workers = celery_inspect.stats() or {}
+        workers_stats = {k: v for k, v in active_workers.items() if k in workers}
     except AttributeError:
         workers_stats = None
 
