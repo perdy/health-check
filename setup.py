@@ -1,10 +1,12 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import sys
 
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
+
+if sys.version_info[0] == 2:
+    from io import open
 
 import status
 
@@ -35,7 +37,8 @@ setup(
     name='django-status',
     version=status.__version__,
     description=status.__description__,
-    long_description='\n'.join([open('README.rst').read(), open('CHANGELOG').read()]),
+    long_description='\n'.join([open('README.rst', encoding='utf-8').read(),
+                                open('CHANGELOG', encoding='utf-8').read()]),
     author=status.__author__,
     author_email=status.__email__,
     maintainer=status.__author__,
@@ -47,7 +50,7 @@ setup(
     ],
     include_package_data=True,
     install_requires=requires,
-    license=open('LICENSE').read(),
+    license=open('LICENSE', encoding='utf-8').read(),
     zip_safe=False,
     keywords='python, django, database, cache, celery, status, check',
     classifiers=[
