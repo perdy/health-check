@@ -1,5 +1,8 @@
 Changes
 =======
+v1.0.5 - 20/01/2016
+ * Fix setup.py problems with requirements file.
+
 v1.0.4 - 14/12/2015
  * Fix setup.py problems with utf-8 files.
 

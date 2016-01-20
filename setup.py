@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import os
 
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
+from pip.req import parse_requirements
+from pip.download import PipSession
 
 if sys.version_info[0] == 2:
-    from io import open
+    from codecs import open
 
 import status
 
@@ -36,8 +39,8 @@ setup(
     name='django-status',
     version=status.__version__,
     description=status.__description__,
-    long_description='\n'.join([open('README.rst', encoding='utf-8').read(),
-                                open('CHANGELOG', encoding='utf-8').read()]),
+    long_description='\n'.join([open('README.rst', encoding='utf_8').read(),
+                                open('CHANGELOG', encoding='utf_8').read()]),
     author=status.__author__,
     author_email=status.__email__,
     maintainer=status.__author__,
@@ -49,7 +52,7 @@ setup(
     ],
     include_package_data=True,
     install_requires=requires,
-    license=open('LICENSE', encoding='utf-8').read(),
+    license=open('LICENSE', encoding='utf_8').read(),
     zip_safe=False,
     keywords='python, django, database, cache, celery, status, check',
     classifiers=[

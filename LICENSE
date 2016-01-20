@@ -1,5 +1,5 @@
 Django Status is a application for Django projects that provides an API to check the status of some parts and some utilities like ping requests.
-Copyright (C) 2015 José Antonio Perdiguero López
+Copyright (C) 2015 Jose Antonio Perdiguero Lopez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
