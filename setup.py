@@ -10,9 +10,8 @@ if sys.version_info[0] == 2:
 
 import status
 
-with open('requirements.txt', 'r') as f:
-    requires = f.read().splitlines()
-
+requirements_file = os.path.join(os.path.dirname(__file__), 'requirements.txt')
+requires = [str(r.req) for r in parse_requirements(requirements_file, session=PipSession())]
 
 class Tox(TestCommand):
     user_options = [('tox-args=', 'a', "Arguments to pass to tox")]
