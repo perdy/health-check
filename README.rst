@@ -2,7 +2,7 @@
 Django Status
 =============
 
-:Version: 1.0.3
+:Version: 1.1.1
 :Status: Production/Stable
 :Author: José Antonio Perdiguero López
 
@@ -17,6 +17,7 @@ Quick start
     pip install django-status
 
 
+#. Add *PROJECT_PATH* to your django settings module.
 #. Add *status* to your **INSTALLED_APPS** settings like this::
 
     INSTALLED_APPS = (
@@ -45,6 +46,10 @@ By default **Django status** provides the follow checks:
 Ping
     A ping to application.
     URL: /api/ping
+
+Code
+    Source code stats such as current active branch, last commit, if debug is active...
+    URL: /api/code
 
 Databases
     Check if databases are running.

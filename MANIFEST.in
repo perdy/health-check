@@ -4,5 +4,6 @@ include README.rst
 include CONTRIBUTORS.rst
 include requirements.txt
 include requirements_test.txt
+include requirements_base.txt
 recursive-include status *
 prune demo

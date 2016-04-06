@@ -1,5 +1,8 @@
 Changes
 =======
+v1.1.2 - 8/04/2016
+ * Add source code stats.
+
 v1.0.5 - 20/01/2016
  * Fix setup.py problems with requirements file.
 

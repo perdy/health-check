@@ -5,7 +5,10 @@ Built-in check providers.
 import datetime
 from django.db import connections, OperationalError
 from django.core.cache import caches as django_caches, InvalidCacheBackendError
-from status.settings import CACHES
+from git import Repo
+from git.exc import InvalidGitRepositoryError
+
+from status.settings import CACHES, DEBUG, PROJECT_PATH
 
 from status.utils import FakeChecker
 
@@ -18,7 +21,8 @@ except ImportError:
 
 
 def ping(*args, **kwargs):
-    """Check if current application is running.
+    """
+    Check if current application is running.
 
     :return: Pong response.
     """
@@ -27,7 +31,8 @@ def ping(*args, **kwargs):
 
 
 def celery(workers, *args, **kwargs):
-    """Check if given celery workers are running.
+    """
+    Check if given celery workers are running.
 
     :param workers: List of workers to be checked.
     :return: Status of each worker.
@@ -43,7 +48,8 @@ def celery(workers, *args, **kwargs):
 
 
 def celery_stats(workers, *args, **kwargs):
-    """Retrieve the stats data of given celery workers.
+    """
+    Retrieve the stats data of given celery workers.
 
     :param workers: List of workers.
     :return: Stats data of each worker.
@@ -58,7 +64,8 @@ def celery_stats(workers, *args, **kwargs):
 
 
 def databases(*args, **kwargs):
-    """Check database status.
+    """
+    Check database status.
 
     :return: Status of each database.
     """
@@ -74,7 +81,8 @@ def databases(*args, **kwargs):
 
 
 def databases_stats(*args, **kwargs):
-    """Retrieve the stats data of each database.
+    """
+    Retrieve the stats data of each database.
 
     :return: Stats data of each database.
     """
@@ -101,7 +109,8 @@ def databases_stats(*args, **kwargs):
 
 
 def caches(*args, **kwargs):
-    """Check caches status.
+    """
+    Check caches status.
 
     :return: Status of each cache.
     """
@@ -118,3 +127,51 @@ def caches(*args, **kwargs):
             status[alias] = False
 
     return status
+
+
+def code(*args, **kwargs):
+    """
+    Code stats, such as current branch, debug mode, last commit, etc.
+
+    :return: Source code stats.
+    """
+    stats = {'debug': DEBUG}
+    try:
+        scm_stats = {'scm': 'git'}
+        repo = Repo(PROJECT_PATH)
+
+        # Branch info
+        branch = repo.active_branch
+        scm_stats['branch'] = {
+            'local': branch.name,
+        }
+        try:
+            # Try to get remote branch name
+            scm_stats['branch']['remote'] = branch.tracking_branch().name,
+        except:
+            scm_stats['branch']['remote'] = 'unknown'
+
+        # Last commit info
+        commit = repo.commit(branch)
+        scm_stats['commit'] = {
+            'id': commit.hexsha,
+            'summary': commit.summary,
+            'author': commit.author.name,
+            'date': datetime.datetime.fromtimestamp(commit.authored_date)
+        }
+
+        # Get tag info
+        tag = None
+        tags = repo.tags
+        tags.reverse()
+        for t in (t for t in tags if tag is None):
+            if t.commit == commit:
+                tag = t
+        if tag:
+            scm_stats['tag'] = tag.name
+    except InvalidGitRepositoryError:
+        scm_stats = {}
+
+    stats.update(scm_stats)
+
+    return stats

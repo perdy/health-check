@@ -2,7 +2,7 @@
 """
 Django Status application.
 """
-__version__ = '1.0.5'
+__version__ = '1.1.2'
 __license__ = 'GPLv3'
 
 __author__ = 'José Antonio Perdiguero López'
