@@ -41,7 +41,7 @@ def celery(workers, *args, **kwargs):
         ping_response = celery_inspect.ping() or {}
         active_workers = ping_response.keys()
         workers_status = {w: w in active_workers for w in workers}
-    except AttributeError:
+    except (AttributeError, OSError):
         workers_status = None
 
     return workers_status

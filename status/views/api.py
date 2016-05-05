@@ -3,12 +3,15 @@
 Views for status API.
 """
 import importlib
+
+from django.core.urlresolvers import reverse
 from django.http import JsonResponse
-from django.utils.decorators import classonlymethod
 from django.views.generic import View
 from django.views.generic.base import ContextMixin
 
-__all__ = ['ProviderAPIView']
+from status import settings
+
+__all__ = ['ProviderAPIView', 'RootAPIView']
 
 
 class JSONResponseMixin(object):
@@ -55,6 +58,19 @@ class APIView(JSONView, ContextMixin):
 
     def delete(self, request, *args, **kwargs):
         return self.get(request, *args, **kwargs)
+
+
+class RootAPIView(APIView):
+    """
+    Root API view that routes to each single ProviderAPIView
+    """
+    def __init__(self):
+        self.providers = settings.CHECK_PROVIDERS
+        super(RootAPIView, self).__init__()
+
+    def get(self, request, *args, **kwargs):
+        context = {name: request.build_absolute_uri(reverse("api_{}".format(name))) for name, _, _, _ in self.providers}
+        return self.render_to_response(context)
 
 
 class ProviderAPIView(APIView):
