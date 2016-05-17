@@ -1,9 +1,7 @@
-from __future__ import unicode_literals
-
 import os
 
 
-PROJECT_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
 APP_PATH = os.path.abspath(os.path.dirname(__file__))
 
 DEBUG = True

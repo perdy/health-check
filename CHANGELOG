@@ -1,5 +1,10 @@
 Changes
 =======
+v1.2.0 - 17/05/2016
+ * Add root view for status api.
+ * Use BASE_DIR instead of PROJECT_PATH to discover source code repo.+
+ * Change default checks to be able to override.
+
 v1.1.2 - 8/04/2016
  * Add source code stats.
 

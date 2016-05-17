@@ -8,7 +8,7 @@ from django.core.cache import caches as django_caches, InvalidCacheBackendError
 from git import Repo
 from git.exc import InvalidGitRepositoryError
 
-from status.settings import CACHES, DEBUG, PROJECT_PATH
+from status.settings import CACHES, DEBUG, BASE_DIR
 
 from status.utils import FakeChecker
 
@@ -138,7 +138,7 @@ def code(*args, **kwargs):
     stats = {'debug': DEBUG}
     try:
         scm_stats = {'scm': 'git'}
-        repo = Repo(PROJECT_PATH)
+        repo = Repo(BASE_DIR)
 
         # Branch info
         branch = repo.active_branch

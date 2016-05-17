@@ -2,7 +2,7 @@
 Django Status
 =============
 
-:Version: 1.1.1
+:Version: 1.2.0
 :Status: Production/Stable
 :Author: José Antonio Perdiguero López
 
@@ -84,7 +84,13 @@ Example::
 
 Default::
 
-    STATUS_CHECK_PROVIDERS = ()
+    STATUS_CHECK_PROVIDERS = (
+        ('ping', 'status.check_providers.ping', None, None),
+        ('code', 'status.check_providers.code', None, None),
+        ('databases', 'status.check_providers.databases', None, None),
+        ('databases/stats', 'status.check_providers.databases_stats', None, None),
+        ('caches', 'status.check_providers.caches', None, None),
+    )
 
 STATUS_CELERY_WORKERS
 ---------------------
