@@ -1,5 +1,8 @@
 Changes
 =======
+v1.2.1 - 31/08/2016
+ * Added compatibility with Django 1.10
+
 v1.2.0 - 17/05/2016
  * Add root view for status api.
  * Use BASE_DIR instead of PROJECT_PATH to discover source code repo.+

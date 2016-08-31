@@ -2,4 +2,4 @@
 # Django Status #
 #################
 
-GitPython>=1.0,<1.1
+GitPython>=1.0

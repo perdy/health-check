@@ -32,6 +32,15 @@ Quick start
         url(r'^status/', include('status.urls')),
     ]
 
+API
+===
+Django Status API can be used as a standalone application including only their urls::
+
+    urlpatterns = [
+        ...
+        url(r'^status/', include('status.api.urls')),
+    ]
+
 Check Providers
 ===============
 Django Status provides a mechanism to add new custom check functions through **check providers**. Each check provider

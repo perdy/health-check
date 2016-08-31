@@ -32,4 +32,3 @@ if CELERY_WORKERS:
         ('celery', 'status.check_providers.celery', None, {'workers': CELERY_WORKERS}),
         ('celery/stats', 'status.check_providers.celery_stats', None, {'workers': CELERY_WORKERS}),
     )
-
