@@ -152,6 +152,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'demo',
     'status',
+    'status.api',
 )
 
 # A sample logging configuration. The only tangible logging
