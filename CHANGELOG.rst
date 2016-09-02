@@ -1,5 +1,13 @@
 Changes
 =======
+v2.0.0 - 2/09/2016
+ * Raise exception if incorrect provider given in settings.
+ * Group providers by resource, adding two by default. *Health* resource manages health checks and *Stats* resource
+reports a detailed status.
+
+v1.3.0 - 31/08/2016
+ * Separate api from main application.
+
 v1.2.1 - 31/08/2016
  * Added compatibility with Django 1.10
 

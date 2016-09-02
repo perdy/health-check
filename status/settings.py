@@ -18,17 +18,24 @@ BASE_DIR = getattr(settings, 'BASE_DIR', None)
 # Celery application
 CELERY_WORKERS = getattr(settings, 'STATUS_CELERY_WORKERS', ())
 
-# Tuple of application name, provider, args, kwargs
-CHECK_PROVIDERS = getattr(settings, 'STATUS_CHECK_PROVIDERS', (
-    ('ping', 'status.check_providers.ping', None, None),
-    ('code', 'status.check_providers.code', None, None),
-    ('databases', 'status.check_providers.databases', None, None),
-    ('databases/stats', 'status.check_providers.databases_stats', None, None),
-    ('caches', 'status.check_providers.caches', None, None),
-))
+# Mapping of resources to list of providers
+# Each provider is a tuple of application name, provider, args, kwargs
+PROVIDERS = getattr(settings, 'STATUS_PROVIDERS', {
+    'health': (
+        ('ping', 'status.providers.health.ping', None, None),
+        ('databases', 'status.providers.health.databases', None, None),
+        ('caches', 'status.providers.health.caches', None, None),
+    ),
+    'stats': (
+        ('databases', 'status.providers.stats.databases', None, None),
+        ('code', 'status.providers.stats.code', None, None),
+    )
+})
 
 if CELERY_WORKERS:
-    CHECK_PROVIDERS += (
-        ('celery', 'status.check_providers.celery', None, {'workers': CELERY_WORKERS}),
-        ('celery/stats', 'status.check_providers.celery_stats', None, {'workers': CELERY_WORKERS}),
+    PROVIDERS['health'] += (
+        ('celery', 'status.providers.health.celery', None, {'workers': CELERY_WORKERS}),
+    )
+    PROVIDERS['stats'] += (
+        ('celery', 'status.providers.stats.celery', None, {'workers': CELERY_WORKERS}),
     )

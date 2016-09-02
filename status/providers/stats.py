@@ -3,13 +3,12 @@
 Built-in check providers.
 """
 import datetime
-from django.db import connections, OperationalError
-from django.core.cache import caches as django_caches, InvalidCacheBackendError
+
+from django.db import OperationalError, connections
 from git import Repo
 from git.exc import InvalidGitRepositoryError
 
-from status.settings import CACHES, DEBUG, BASE_DIR
-
+from status.settings import BASE_DIR, DEBUG
 from status.utils import FakeChecker
 
 try:
@@ -20,34 +19,7 @@ except ImportError:
     celery_inspect = FakeChecker()
 
 
-def ping(*args, **kwargs):
-    """
-    Check if current application is running.
-
-    :return: Pong response.
-    """
-
-    return {'pong': True}
-
-
 def celery(workers, *args, **kwargs):
-    """
-    Check if given celery workers are running.
-
-    :param workers: List of workers to be checked.
-    :return: Status of each worker.
-    """
-    try:
-        ping_response = celery_inspect.ping() or {}
-        active_workers = ping_response.keys()
-        workers_status = {w: w in active_workers for w in workers}
-    except (AttributeError, OSError):
-        workers_status = None
-
-    return workers_status
-
-
-def celery_stats(workers, *args, **kwargs):
     """
     Retrieve the stats data of given celery workers.
 
@@ -64,23 +36,6 @@ def celery_stats(workers, *args, **kwargs):
 
 
 def databases(*args, **kwargs):
-    """
-    Check database status.
-
-    :return: Status of each database.
-    """
-    status = {}
-    for connection in connections.all():
-        try:
-            connection.connect()
-            status[connection.alias] = connection.is_usable()
-        except OperationalError:
-            status[connection.alias] = False
-
-    return status
-
-
-def databases_stats(*args, **kwargs):
     """
     Retrieve the stats data of each database.
 
@@ -106,27 +61,6 @@ def databases_stats(*args, **kwargs):
             }
 
     return stats
-
-
-def caches(*args, **kwargs):
-    """
-    Check caches status.
-
-    :return: Status of each cache.
-    """
-    caches_aliases = CACHES.keys()
-    value = datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S')
-
-    status = {}
-    for alias in caches_aliases:
-        try:
-            cache = django_caches[alias]
-            cache.set('django_status_test_cache', value)
-            status[alias] = True
-        except InvalidCacheBackendError:
-            status[alias] = False
-
-    return status
 
 
 def code(*args, **kwargs):
