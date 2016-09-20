@@ -16,7 +16,7 @@ if sys.version_info[0] == 2:
 _requirements_file = os.path.join(os.path.dirname(__file__), 'requirements.txt')
 _REQUIRES = [str(r.req) for r in parse_requirements(_requirements_file, session=PipSession())]
 
-_LONG_DESCRIPTION = open('README.rst', 'r', 'utf-8').read()
+_LONG_DESCRIPTION = open('README.rst', 'r', encoding='utf-8').read()
 _CLASSIFIERS = (
     'Development Status :: 5 - Production/Stable',
     'Framework :: Django',
