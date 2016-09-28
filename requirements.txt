@@ -1,8 +1,2 @@
-#################
-# Django Status #
-#################
-
--r requirements_base.txt
-
-## Django
 Django>=1.8
+GitPython>=1.0

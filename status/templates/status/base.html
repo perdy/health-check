@@ -1,0 +1,68 @@
+{% load staticfiles %}
+
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+       More info: h5bp.com/i/378 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>{% block page_title %}{{ _("Status") }}{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Django Status{% endblock %}">
+  <meta name="author" content="{% block meta_author %}PeRDy{% endblock %}">
+
+  <!-- Mobile viewport optimized: h5bp.com/viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  {% block meta %}
+  {% endblock %}
+
+  {# use the CDN to get bootstrap css. can not be inside compress css block #}
+  {% block cdn_css %}
+  {% endblock cdn_css %}
+
+  <link rel="stylesheet" href="{% static 'status/css/style.css' %}">
+  {% block css %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}" {% block body_attributes %}{% endblock %}>
+{% block body %}
+  <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
+       chromium.org/developers/how-tos/chrome-frame-getting-started -->
+  <!--[if lt IE 7]>
+    <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+  <![endif]-->
+  <header>
+    {% block header %}{% endblock %}
+  </header>
+
+  <div class="container" role="main">
+    {% block content %}{% endblock %}
+  </div>
+
+  <footer>
+    {% block footer %}
+    {% endblock footer %}
+  </footer>
+
+
+  <!-- JavaScript at the bottom for fast page loading -->
+
+  <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+  {% block cdn_js %}
+  {% endblock cdn_js %}
+
+  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+  <script src=""></script>
+
+  <!-- scripts concatenated and minified via django-compressor -->
+  {% block js %}{% endblock js %}
+  <!-- end scripts -->
+{% endblock %}
+</body>
+</html>

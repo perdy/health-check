@@ -1,22 +1,67 @@
 # -*- coding: utf-8 -*-
 
 import os
+import shutil
+import subprocess
 import sys
 
 from pip.download import PipSession
 from pip.req import parse_requirements
-from setuptools import setup
+from setuptools import setup, Command
+from wheel.bdist_wheel import bdist_wheel
 
 import status
+
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 if sys.version_info[0] == 2:
     from codecs import open
 
 
-_requirements_file = os.path.join(os.path.dirname(__file__), 'requirements.txt')
+class Gulp(Command):
+    description = 'Run gulp'
+    user_options = [
+        ('task=', 't', 'gulp task')
+    ]
+
+    def initialize_options(self):
+        self.task = 'default'
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        subprocess.call(['gulp', self.task])
+
+
+class Dist(bdist_wheel):
+    description = 'Generate static files and create dist package'
+    user_options = bdist_wheel.user_options + [
+        ('clean', 'c', 'clean dist directories before build (default: false)')
+    ]
+    boolean_options = bdist_wheel.boolean_options + ['clean']
+
+    def initialize_options(self):
+        super(Dist, self).initialize_options()
+        self.clean = False
+
+    def run(self):
+        if self.clean:
+            shutil.rmtree('build', ignore_errors=True)
+            shutil.rmtree('dist', ignore_errors=True)
+            shutil.rmtree('django_status.egg-info', ignore_errors=True)
+        subprocess.call(['gulp', 'dist'])
+        super(Dist, self).run()
+
+
+# Read requirements
+_requirements_file = os.path.join(BASE_DIR, 'requirements.txt')
 _REQUIRES = [str(r.req) for r in parse_requirements(_requirements_file, session=PipSession())]
 
-_LONG_DESCRIPTION = open('README.rst', 'r', encoding='utf-8').read()
+# Read description
+with open(os.path.join(BASE_DIR, 'README.rst'), encoding='utf-8') as f:
+    _LONG_DESCRIPTION = f.read()
+
 _CLASSIFIERS = (
     'Development Status :: 5 - Production/Stable',
     'Framework :: Django',
@@ -54,8 +99,20 @@ setup(
     ],
     include_package_data=True,
     install_requires=_REQUIRES,
+    extras_require={
+        'dev': [
+            'setuptools',
+            'pip',
+            'wheel',
+            'prospector'
+        ]
+    },
     license=status.__license__,
     zip_safe=False,
     keywords=_KEYWORDS,
     classifiers=_CLASSIFIERS,
+    cmdclass={
+        'gulp': Gulp,
+        'dist': Dist,
+    },
 )

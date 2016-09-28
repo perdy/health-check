@@ -1,0 +1,12 @@
+{% extends "status/base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+  <div id="app"></div>
+
+  <script id="api_url" type="text/plain">{% url "status:api_stats_root" %}</script>
+{% endblock %}
+
+{% block js %}
+  <script type="text/javascript" src="{% static "status/apps/stats.js" %}"></script>
+{% endblock js %}

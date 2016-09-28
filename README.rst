@@ -2,11 +2,11 @@
 Django Status
 =============
 
-:Version: 1.3.0
+:Version: 2.0.0
 :Status: Production/Stable
 :Author: José Antonio Perdiguero López
 
-Django Status is a application for Django projects that provides an API to check the status of some parts and some
+Django Status is an application for Django projects that provides an API to check the status of some parts and some
 utilities like ping requests.
 
 Quick start
@@ -32,14 +32,27 @@ Quick start
         url(r'^status/', include('status.urls')),
     ]
 
-API
-===
+Django Status API
+=================
 Django Status API can be used as a standalone application including only their urls::
 
     urlpatterns = [
         ...
         url(r'^status/', include('status.api.urls')),
     ]
+
+This API have a single url for each provider, that are grouped by resources.
+Each provider can be queried alone, returning his current status::
+
+    http://your_domain/status/api/health/ping
+
+Also there is a resource view that will return the status of all providers::
+
+    http://your_domain/status/api/health
+
+For last, there is a root view that will return the status of all providers from all resources::
+
+    http://your_domain/status/api
 
 Check Providers
 ===============
@@ -54,31 +67,31 @@ By default **Django status** provides the follow checks:
 
 Ping
     A ping to application.
-    URL: /api/ping
-
-Code
-    Source code stats such as current active branch, last commit, if debug is active...
-    URL: /api/code
+    URL: /api/health/ping
 
 Databases
     Check if databases are running.
-    URL: /api/databases
-
-Databases stats
-    Show stats for all databases.
-    URL: /api/databases/stats
+    URL: /api/health/databases
 
 Caches
     Check if caches are running.
-    URL: /api/caches
+    URL: /api/health/caches
 
 Celery
     Check if celery workers defined in settings are running.
-    URL: /api/celery
+    URL: /api/health/celery
+
+Databases stats
+    Show stats for all databases.
+    URL: /api/stats/databases
 
 Celery stats
     Show celery worker stats.
-    URL: /api/celery/stats
+    URL: /api/stats/celery
+
+Code
+    Source code stats such as current active branch, last commit, if debug is active...
+    URL: /api/stats/code
 
 Settings
 ========
@@ -87,23 +100,30 @@ STATUS_CHECK_PROVIDERS
 List of additional check providers. Each provider consists in a tuple of name, function complete path, args and kwargs.
 Example::
 
-    STATUS_CHECK_PROVIDERS = (
-        ('test', 'application.module.test_function', [1, 2], {'foo': 'bar'}),
-    )
+    STATUS_PROVIDERS = {
+        'resource': (
+            ('test', 'application.module.test_function', [1, 2], {'foo': 'bar'}),
+        )
+    }
 
 Default::
 
-    STATUS_CHECK_PROVIDERS = (
-        ('ping', 'status.check_providers.ping', None, None),
-        ('code', 'status.check_providers.code', None, None),
-        ('databases', 'status.check_providers.databases', None, None),
-        ('databases/stats', 'status.check_providers.databases_stats', None, None),
-        ('caches', 'status.check_providers.caches', None, None),
-    )
+    PROVIDERS = getattr(settings, 'STATUS_PROVIDERS', {
+        'health': (
+            ('ping', 'status.providers.health.ping', None, None),
+            ('databases', 'status.providers.health.databases', None, None),
+            ('caches', 'status.providers.health.caches', None, None),
+        ),
+        'stats': (
+            ('databases', 'status.providers.stats.databases', None, None),
+            ('code', 'status.providers.stats.code', None, None),
+        )
+    }
 
 STATUS_CELERY_WORKERS
 ---------------------
-List of hostname from celery workers to be checked.
+List of hostname from celery workers to be checked. If any worker is defined, two additional providers listed previously
+will be added to default set.
 Default::
 
     STATUS_CELERY_WORKERS = ()
