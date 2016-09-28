@@ -34,9 +34,9 @@
   "description": "Application that provides an API to check the status of some parts and some utilities like ping",
   "dest": {
     "apps": "./apps",
-    "css": "./dist/css",
-    "dist": "./dist",
-    "fonts": "./dist/fonts",
+    "css": "./status/css",
+    "dist": "./status",
+    "fonts": "./status/fonts",
     "style": "./css/style.css"
   },
   "devDependencies": {

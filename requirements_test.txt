@@ -1,9 +1,0 @@
-ipdb
-coverage==3.7.1
-pytest
-pytest-django
-pytest-xdist
-pytest-cov
-mock
-freezegun
-model_mommy

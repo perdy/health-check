@@ -27,6 +27,7 @@ var/
 *.egg
 *dist/
 *vendor/
+status/static/status/
 node_modules/
 
 # PyInstaller
