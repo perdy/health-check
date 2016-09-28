@@ -4,8 +4,8 @@ Built-in check providers.
 """
 import datetime
 
-from django.core.cache import InvalidCacheBackendError, caches as django_caches
-from django.db import OperationalError, connections
+from django.core.cache import caches as django_caches
+from django.db import connections
 
 from status.settings import CACHES
 from status.utils import FakeChecker
@@ -56,7 +56,7 @@ def databases(*args, **kwargs):
         try:
             connection.connect()
             status[connection.alias] = connection.is_usable()
-        except OperationalError:
+        except:
             status[connection.alias] = False
 
     return status
@@ -77,7 +77,7 @@ def caches(*args, **kwargs):
             cache = django_caches[alias]
             cache.set('django_status_test_cache', value)
             status[alias] = True
-        except InvalidCacheBackendError:
+        except:
             status[alias] = False
 
     return status
