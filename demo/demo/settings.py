@@ -56,7 +56,7 @@ STATIC_ROOT = PROJECT_PATH + '/static/'
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-    APP_PATH + '/static/',
+    os.path.join(APP_PATH, 'static'),
 )
 
 STATICFILES_FINDERS = (
@@ -66,17 +66,21 @@ STATICFILES_FINDERS = (
 
 SECRET_KEY = '3+&amp;*6eq%(gs1heqnu!fpb%&amp;#16_^3x#s_nh04^7dxa8tgb%meu'
 
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-)
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.media',
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -92,7 +96,7 @@ ROOT_URLCONF = 'demo.urls'
 WSGI_APPLICATION = 'demo.wsgi.application'
 
 TEMPLATE_DIRS = (
-    APP_PATH + '/templates/',
+    os.path.join(APP_PATH, 'templates'),
 )
 
 INSTALLED_APPS = (

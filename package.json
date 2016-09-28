@@ -1,0 +1,92 @@
+{
+  "author": "Jose Antonio Perdiguero Lopez",
+  "browser": {
+    "bootstrap": "./node_modules/bootstrap/dist/js/bootstrap.min.js"
+  },
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  },
+  "browserify-shim": {
+    "bootstrap": {
+      "depends": [
+        "jquery:jQuery",
+        "tether:Tether"
+      ]
+    }
+  },
+  "bugs": {
+    "url": "https://github.com/PeRDy/django-status/issues"
+  },
+  "dependencies": {
+    "bootstrap": "^4.0.0-alpha",
+    "flux": "^2.1.1",
+    "font-awesome": "^4.6.3",
+    "highlight.js": "^9.7.0",
+    "jquery": "^3.1.0",
+    "keymirror": "^0.1.1",
+    "object-assign": "^4.1.0",
+    "prismjs": "^1.5.1",
+    "react": "^15.3.1",
+    "react-dom": "^15.3.1"
+  },
+  "description": "Application that provides an API to check the status of some parts and some utilities like ping",
+  "dest": {
+    "apps": "./apps",
+    "css": "./dist/css",
+    "dist": "./dist",
+    "fonts": "./dist/fonts",
+    "style": "./css/style.css"
+  },
+  "devDependencies": {
+    "babel": "^6.5.2",
+    "babel-preset-es2015": "^6.14.0",
+    "babel-preset-react": "^6.11.1",
+    "babelify": "^7.3.0",
+    "browserify": "^13.1.0",
+    "browserify-shim": "^3.8.12",
+    "del": "^2.2.2",
+    "eslint": "^3.4.0",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-eslint": "^3.0.1",
+    "gulp-flatmap": "^1.0.0",
+    "gulp-minify-css": "^1.2.4",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.3.2",
+    "gulp-uglify": "^2.0.0",
+    "tether": "^1.3.7",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "homepage": "https://github.com/PeRDy/django-status#readme",
+  "keywords": [
+    "django",
+    "status",
+    "healthcheck",
+    "api"
+  ],
+  "license": "GPL-3.0",
+  "main": "js/app.js",
+  "name": "django-status",
+  "paths": {
+    "apps": [
+      "./js/*.jsx"
+    ],
+    "css": [],
+    "fonts": [
+      "./node_modules/font-awesome/fonts/*"
+    ],
+    "html": "*.html",
+    "js": "./js/**/*.js",
+    "jsx": "./js/**/*.jsx",
+    "scss": "./scss/**/*.scss",
+    "static": "./status/static"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PeRDy/django-status.git"
+  },
+  "version": "1.0.0"
+}

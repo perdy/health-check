@@ -1,5 +1,5 @@
 -   repo: git@github.com:pre-commit/pre-commit-hooks
-    sha: 09d1747840bfb1457e9b8876b4c1f577d00a2a37
+    sha: 18d7035de5388cc7775be57f529c154bf541aab9
     hooks:
     -   id: check-added-large-files
     -   id: check-merge-conflict
@@ -15,7 +15,7 @@
     -   id: pretty-format-json
         args:
         - --autofix
-        - --indent 2
+        - --indent=2
     -   id: requirements-txt-fixer
     -   id: trailing-whitespace
 -   repo: git://github.com/guykisel/prospector-mirror
