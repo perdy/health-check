@@ -32,28 +32,6 @@ Quick start
         url(r'^status/', include('status.urls')),
     ]
 
-Django Status API
-=================
-Django Status API can be used as a standalone application including only their urls::
-
-    urlpatterns = [
-        ...
-        url(r'^status/', include('status.api.urls')),
-    ]
-
-This API have a single url for each provider, that are grouped by resources.
-Each provider can be queried alone, returning his current status::
-
-    http://your_domain/status/api/health/ping
-
-Also there is a resource view that will return the status of all providers::
-
-    http://your_domain/status/api/health
-
-For last, there is a root view that will return the status of all providers from all resources::
-
-    http://your_domain/status/api
-
 Check Providers
 ===============
 Django Status provides a mechanism to add new custom check functions through **check providers**. Each check provider
@@ -92,6 +70,38 @@ Celery stats
 Code
     Source code stats such as current active branch, last commit, if debug is active...
     URL: /api/stats/code
+
+Django Status Website
+=====================
+A website that shows Django Status data is available in this application. It's possible access to follow URLs to get a
+detailed view of your system status. Those three pages will show results of providers configured (as explained in
+settings section)::
+
+    http://www.website.com/status/
+    http://www.website.com/status/health/
+    http://www.website.com/status/stats/
+
+Django Status API
+=================
+Django Status API can be used as a standalone application including only their urls::
+
+    urlpatterns = [
+        ...
+        url(r'^status/', include('status.api.urls')),
+    ]
+
+This API have a single url for each provider, that are grouped by resources.
+Each provider can be queried alone, returning his current status::
+
+    http://your_domain/status/api/health/ping
+
+Also there is a resource view that will return the status of all providers::
+
+    http://your_domain/status/api/health
+
+For last, there is a root view that will return the status of all providers from all resources::
+
+    http://your_domain/status/api
 
 Settings
 ========
