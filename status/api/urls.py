@@ -16,10 +16,10 @@ def get_provider_urls(resource, providers):
                 name='api_{}_root'.format(resource))]
 
     # Resource providers views
-    urls += [url(r'^{}/{}/?$'.format(resource, name),
-                 ProviderAPIView.as_view(provider=provider, provider_args=args, provider_kwargs=kwargs),
-                 name='api_{}_{}'.format(resource, name))
-             for name, provider, args, kwargs in providers]
+    urls += [url(r'^{}/{}/?$'.format(resource, n),
+                 ProviderAPIView.as_view(provider=p, provider_name=n, provider_args=args, provider_kwargs=kwargs),
+                 name='api_{}_{}'.format(resource, n))
+             for n, p, args, kwargs in providers]
 
     return urls
 

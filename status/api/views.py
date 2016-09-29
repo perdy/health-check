@@ -2,14 +2,13 @@
 """
 Views for status API.
 """
-import importlib
-
-from django.core.urlresolvers import reverse
 from django.http import JsonResponse
 from django.views.generic import View
 from django.views.generic.base import ContextMixin
 
 from status import settings
+from status.api.mixins import ProviderMixin
+from status.providers.base import Provider, Resource
 
 __all__ = ['ProviderAPIView', 'RootAPIView']
 
@@ -63,17 +62,14 @@ class APIView(JSONView, ContextMixin):
         return self.get(request, *args, **kwargs)
 
 
-class RootAPIView(APIView):
+class RootAPIView(ProviderMixin, APIView):
     """
     Root API view that routes to each single ProviderAPIView
     """
 
     def __init__(self):
         super(RootAPIView, self).__init__()
-        self.providers = settings.PROVIDERS
-
-    def _get_provider_url(self, request, resource, name):
-        return request.build_absolute_uri(reverse('api_{}_{}'.format(resource, name)))
+        self.resources = {resource: Resource(resource) for resource in settings.PROVIDERS}
 
     def get(self, request, *args, **kwargs):
         """
@@ -85,9 +81,7 @@ class RootAPIView(APIView):
         :param request: Request.
         :return: Rendered response.
         """
-        context = {resource: {name: ProviderAPIView(provider, args, kwargs).get_context_data()
-                              for name, provider, args, kwargs in providers}
-                   for resource, providers in self.providers.items()}
+        context = {resource.name: resource() for resource in self.resources.values()}
         return self.render_to_response(context)
 
     def options(self, request, *args, **kwargs):
@@ -100,12 +94,13 @@ class RootAPIView(APIView):
         :param request: Request.
         :return: Rendered response.
         """
-        context = {resource: {name: self._get_provider_url(request, resource, name) for name, _, _, _ in providers}
-                   for resource, providers in self.providers.items()}
+        context = {resource.name: {provider_name: self.get_provider_url(request, resource.name, provider_name)
+                                   for provider_name in resource.providers.keys()}
+                   for resource in self.resources.values()}
         return self.render_to_response(context)
 
 
-class ResourceAPIView(RootAPIView):
+class ResourceAPIView(ProviderMixin, APIView):
     """
     Root API view for a resource. List all checks
     """
@@ -113,25 +108,10 @@ class ResourceAPIView(RootAPIView):
 
     def __init__(self, resource, **kwargs):
         super(ResourceAPIView, self).__init__()
-        self.resource = resource
-        try:
-            self.providers = settings.PROVIDERS[resource]
-        except KeyError:
-            raise ValueError("Resource doesn't exists: %s" % (resource,))
+        self.resource = Resource(resource)
 
-    def get(self, request, *args, **kwargs):
-        """
-        Create an object that contains all providers of current resource with their current status.
-
-        Mapping of provider to status.
-        Provider -> Status
-
-        :param request: Request.
-        :return: Rendered response.
-        """
-        context = {name: ProviderAPIView(provider=p, provider_args=args, provider_kwargs=kwargs).get_context_data()
-                   for name, p, args, kwargs in self.providers}
-        return self.render_to_response(context)
+    def get_context_data(self, **kwargs):
+        return self.resource()
 
     def options(self, request, *args, **kwargs):
         """
@@ -143,8 +123,8 @@ class ResourceAPIView(RootAPIView):
         :param request: Request.
         :return: Rendered response.
         """
-        context = {name: self._get_provider_url(request, self.resource, name)
-                   for name, _, _, _ in self.providers}
+        context = {name: self.get_provider_url(request, self.resource.name, name)
+                   for name in self.resource.providers.keys()}
         return self.render_to_response(context)
 
 
@@ -153,23 +133,13 @@ class ProviderAPIView(APIView):
     Specific class that uses a given provider.
     """
     provider = None
+    provider_name = None
     provider_args = None
     provider_kwargs = None
 
-    def __init__(self, provider, provider_args, provider_kwargs, **kwargs):
-        if isinstance(provider, str):
-            provider_module, provider_func = provider.rsplit('.', 1)
-            module = importlib.import_module(provider_module)
-            self.provider = getattr(module, provider_func, None)
-            if self.provider is None:
-                raise ValueError('Provider not found: %s' % (provider,))
-        else:
-            self.provider = provider
-
-        self.provider_args = provider_args or ()
-        self.provider_kwargs = provider_kwargs or {}
-
+    def __init__(self, provider_name, provider, provider_args, provider_kwargs, **kwargs):
+        self.provider = Provider(provider_name, provider, provider_args, provider_kwargs)
         super(ProviderAPIView, self).__init__(**kwargs)
 
     def get_context_data(self):
-        return self.provider(*self.provider_args, **self.provider_kwargs)
+        return self.provider()
