@@ -2,7 +2,7 @@
 Django Status
 =============
 
-:Version: 2.0.0
+:Version: 2.1.0
 :Status: Production/Stable
 :Author: José Antonio Perdiguero López
 
@@ -71,7 +71,7 @@ Code
     Source code stats such as current active branch, last commit, if debug is active...
     URL: /api/stats/code
 
-Django Status Website
+Django Status website
 =====================
 A website that shows Django Status data is available in this application. It's possible access to follow URLs to get a
 detailed view of your system status. Those three pages will show results of providers configured (as explained in
@@ -102,6 +102,20 @@ Also there is a resource view that will return the status of all providers::
 For last, there is a root view that will return the status of all providers from all resources::
 
     http://your_domain/status/api
+
+Django management commands
+==========================
+Django Status provides a django management command to query current status of a resource. This command can be call as::
+
+    python manage.py status <resource> [options]
+
+To get current status of health checks, and exit with an error if some check is failing::
+
+    python manage.py status health -e
+
+Each resource has its own set of options that can be displayed through command help::
+
+    python manage.py status -h
 
 Settings
 ========

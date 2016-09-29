@@ -45,6 +45,9 @@ class Dist(bdist_wheel):
         super(Dist, self).initialize_options()
         self.clean = False
 
+    def finalize_options(self):
+        super(Dist, self).finalize_options()
+
     def run(self):
         if self.clean:
             shutil.rmtree('build', ignore_errors=True)
@@ -53,6 +56,15 @@ class Dist(bdist_wheel):
         subprocess.call(['gulp', 'dist'])
         super(Dist, self).run()
 
+        # Change distribution files from bdist_wheel to dist
+        dist = []
+        for d in self.distribution.dist_files:
+            if d[0] == 'bdist_wheel':
+                d = ('dist', ) + d[1:]
+
+            dist.append(d)
+
+        self.distribution.dist_files = dist
 
 # Read requirements
 _requirements_file = os.path.join(BASE_DIR, 'requirements.txt')

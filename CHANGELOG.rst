@@ -1,9 +1,14 @@
 Changes
 =======
+v2.1.0 - 29/09/2016
+ * Create helpers to handle resources and providers and API refactor to use these helpers.
+ * Create django management command that provides current status of a resource.
+
 v2.0.0 - 2/09/2016
  * Raise exception if incorrect provider given in settings.
  * Group providers by resource, adding two by default. *Health* resource manages health checks and *Stats* resource
 reports a detailed status.
+ * Adds HTML views to display status of resources and providers.
 
 v1.3.0 - 31/08/2016
  * Separate api from main application.
