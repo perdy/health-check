@@ -8,7 +8,6 @@ import sys
 from pip.download import PipSession
 from pip.req import parse_requirements
 from setuptools import setup, Command
-from wheel.bdist_wheel import bdist_wheel
 
 import status
 
@@ -25,7 +24,7 @@ class Gulp(Command):
     ]
 
     def initialize_options(self):
-        self.task = 'default'
+        self.task = 'dist'
 
     def finalize_options(self):
         pass
@@ -34,37 +33,28 @@ class Gulp(Command):
         subprocess.call(['gulp', self.task])
 
 
-class Dist(bdist_wheel):
+class Dist(Command):
     description = 'Generate static files and create dist package'
-    user_options = bdist_wheel.user_options + [
+    user_options = [
         ('clean', 'c', 'clean dist directories before build (default: false)')
     ]
-    boolean_options = bdist_wheel.boolean_options + ['clean']
+    boolean_options = ['clean']
 
     def initialize_options(self):
-        super(Dist, self).initialize_options()
         self.clean = False
 
     def finalize_options(self):
-        super(Dist, self).finalize_options()
+        pass
 
     def run(self):
         if self.clean:
             shutil.rmtree('build', ignore_errors=True)
             shutil.rmtree('dist', ignore_errors=True)
             shutil.rmtree('django_status.egg-info', ignore_errors=True)
-        subprocess.call(['gulp', 'dist'])
-        super(Dist, self).run()
 
-        # Change distribution files from bdist_wheel to dist
-        dist = []
-        for d in self.distribution.dist_files:
-            if d[0] == 'bdist_wheel':
-                d = ('dist', ) + d[1:]
-
-            dist.append(d)
-
-        self.distribution.dist_files = dist
+        self.run_command('gulp')
+        self.run_command('sdist')
+        self.run_command('bdist_wheel')
 
 # Read requirements
 _requirements_file = os.path.join(BASE_DIR, 'requirements.txt')
