@@ -28,6 +28,8 @@ var/
 *dist/
 *vendor/
 status/static/status/
+demo/static/
+./static/
 node_modules/
 
 # PyInstaller
@@ -58,7 +60,6 @@ coverage.xml
 
 # Django stuff:
 *.log
-static/
 
 # Sphinx documentation
 docs/_build/
