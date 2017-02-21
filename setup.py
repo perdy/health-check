@@ -91,7 +91,7 @@ _KEYWORDS = ' '.join([
 
 setup(
     name='django-status',
-    version='2.1.0',
+    version='2.2.0',
     description='Application that provides an API to check the status of some parts and some utilities like ping.',
     long_description=_LONG_DESCRIPTION,
     author='José Antonio Perdiguero López',
