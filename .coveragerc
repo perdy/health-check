@@ -10,6 +10,7 @@ omit =
     *manage.py
     *wsgi.py
     *celery.py
+    *apps.py
 
 [report]
 exclude_lines =
@@ -27,6 +28,7 @@ exclude_lines =
     if settings\.DEBUG
 
 ignore_errors = True
+show_missing = True
 
 [paths]
 source =

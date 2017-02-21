@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.views.generic import View
 from django.views.generic.base import ContextMixin
 
-from status import settings
+from status.settings import settings
 from status.api.mixins import ProviderMixin
 from status.providers.base import Provider, Resource
 
@@ -69,7 +69,7 @@ class RootAPIView(ProviderMixin, APIView):
 
     def __init__(self):
         super(RootAPIView, self).__init__()
-        self.resources = {resource: Resource(resource) for resource in settings.PROVIDERS}
+        self.resources = {resource: Resource(resource) for resource in settings.providers}
 
     def get(self, request, *args, **kwargs):
         """

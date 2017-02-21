@@ -6,7 +6,7 @@ from itertools import chain
 
 from django.conf.urls import url
 
-from status import settings
+from status.settings import settings
 from status.api.views import RootAPIView, ProviderAPIView, ResourceAPIView
 
 
@@ -24,7 +24,7 @@ def get_provider_urls(resource, providers):
     return urls
 
 
-providers_urls = chain.from_iterable([get_provider_urls(r, p) for r, p in settings.PROVIDERS.items()])
+providers_urls = chain.from_iterable([get_provider_urls(r, p) for r, p in settings.providers.items()])
 
 urlpatterns = list(providers_urls)
 

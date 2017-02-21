@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import importlib
 
-from status import settings
+from status.settings import settings
 
 __all__ = ['Provider', 'Resource']
 
@@ -65,7 +65,7 @@ class Resource:
         self.name = name
         try:
             self.providers = {name: Provider(name=name, provider=provider, args=args, kwargs=kwargs)
-                              for name, provider, args, kwargs in settings.PROVIDERS[self.name]}
+                              for name, provider, args, kwargs in settings.providers[self.name]}
         except KeyError:
             raise ValueError("Resource doesn't exists: %s" % (self.name,))
 

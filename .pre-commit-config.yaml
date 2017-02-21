@@ -22,5 +22,3 @@
     sha: 00fbd80101566b1b9c873c71f2ab7b95b8bd0a7d
     hooks:
     -   id: prospector
-        args:
-        - --profile-path=.prospector.yaml

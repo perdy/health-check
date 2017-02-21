@@ -6,15 +6,17 @@ import subprocess
 import sys
 
 from pip.download import PipSession
-from pip.req import parse_requirements
+from pip.req import parse_requirements as requirements
 from setuptools import setup, Command
-
-import status
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 if sys.version_info[0] == 2:
     from codecs import open
+
+
+def parse_requirements(req_file):
+    return [str(req.req) for req in requirements(req_file, session=PipSession())]
 
 
 class Gulp(Command):
@@ -58,7 +60,9 @@ class Dist(Command):
 
 # Read requirements
 _requirements_file = os.path.join(BASE_DIR, 'requirements.txt')
-_REQUIRES = [str(r.req) for r in parse_requirements(_requirements_file, session=PipSession())]
+_tests_requirements_file = os.path.join(BASE_DIR, 'tests/requirements.txt')
+_REQUIRES = parse_requirements(_requirements_file)
+_TESTS_REQUIRES = parse_requirements(_tests_requirements_file)
 
 # Read description
 with open(os.path.join(BASE_DIR, 'README.rst'), encoding='utf-8') as f:
@@ -87,29 +91,35 @@ _KEYWORDS = ' '.join([
 
 setup(
     name='django-status',
-    version=status.__version__,
-    description=status.__description__,
+    version='2.1.0',
+    description='Application that provides an API to check the status of some parts and some utilities like ping.',
     long_description=_LONG_DESCRIPTION,
-    author=status.__author__,
-    author_email=status.__email__,
-    maintainer=status.__author__,
-    maintainer_email=status.__email__,
-    url=status.__url__,
-    download_url=status.__url__,
+    author='José Antonio Perdiguero López',
+    author_email='perdy.hh@gmail.com',
+    maintainer='José Antonio Perdiguero López',
+    maintainer_email='perdy.hh@gmail.com',
+    url='https://github.com/PeRDy/django-status',
+    download_url='https://github.com/PeRDy/django-status',
     packages=[
         'status',
     ],
     include_package_data=True,
     install_requires=_REQUIRES,
+    tests_require=_TESTS_REQUIRES,
     extras_require={
         'dev': [
             'setuptools',
             'pip',
             'wheel',
-            'prospector'
+            'prospector',
+            'twine',
+            'bumpversion',
+            'pre-commit',
+            'nose'
+            'tox',
         ]
     },
-    license=status.__license__,
+    license='GPLv3',
     zip_safe=False,
     keywords=_KEYWORDS,
     classifiers=_CLASSIFIERS,
@@ -117,4 +127,9 @@ setup(
         'gulp': Gulp,
         'dist': Dist,
     },
+    entry_points={
+        'console_scripts': [
+            'django_status = status.__main__:main',
+        ],
+    }
 )

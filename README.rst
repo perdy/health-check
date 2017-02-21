@@ -6,8 +6,8 @@ Django Status
 :Status: Production/Stable
 :Author: José Antonio Perdiguero López
 
-Django Status is an application for Django projects that provides an API to check the status of some parts and some
-utilities like ping requests.
+Django Status is an application that provides an API to check the status of some parts and some utilities like ping
+requests. This application can works as standalone or included in a Django project.
 
 Quick start
 ===========
@@ -117,6 +117,12 @@ Each resource has its own set of options that can be displayed through command h
 
     python manage.py status -h
 
+Command
+=======
+Previous Django command can be used in standalone mode as::
+
+    django_status <resource> [options]
+
 Settings
 ========
 STATUS_CHECK_PROVIDERS
@@ -135,11 +141,11 @@ Default::
     PROVIDERS = getattr(settings, 'STATUS_PROVIDERS', {
         'health': (
             ('ping', 'status.providers.health.ping', None, None),
-            ('databases', 'status.providers.health.databases', None, None),
-            ('caches', 'status.providers.health.caches', None, None),
+            ('databases', 'status.providers.django.health.databases', None, None),
+            ('caches', 'status.providers.django.health.caches', None, None),
         ),
         'stats': (
-            ('databases', 'status.providers.stats.databases', None, None),
+            ('databases', 'status.providers.django.stats.databases', None, None),
             ('code', 'status.providers.stats.code', None, None),
         )
     }

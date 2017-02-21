@@ -2,40 +2,82 @@
 """
 Settings.
 """
+__all__ = ['settings']
 
-from django.conf import settings
 
-# Django debug settings.
-DEBUG = getattr(settings, 'DEBUG', False)
+class Settings:
+    debug = False
+    base_dir = None
+    installed_apps = ()
+    caches = {}
+    celery_workers = ()
+    providers = {'health': (), 'stats': ()}
 
-# Django installed apps
-INSTALLED_APPS = settings.INSTALLED_APPS
-CACHES = settings.CACHES
+    @classmethod
+    def _add_celery_providers(cls):
+        cls.providers['health'] += (
+            ('celery', 'status.providers.celery.health.celery', None, {'workers': cls.celery_workers}),
+        )
+        cls.providers['stats'] += (
+            ('celery', 'status.providers.celery.stats.celery', None, {'workers': cls.celery_workers}),
+        )
 
-# Project path defined in Django settings
-BASE_DIR = getattr(settings, 'BASE_DIR', None)
+    @classmethod
+    def build_from_module(cls, module=None):
+        # Project path defined in settings
+        cls.base_dir = getattr(module, 'BASE_DIR', None)
 
-# Celery application
-CELERY_WORKERS = getattr(settings, 'STATUS_CELERY_WORKERS', ())
+        # Celery application
+        cls.celery_workers = getattr(module, 'STATUS_CELERY_WORKERS', ())
 
-# Mapping of resources to list of providers
-# Each provider is a tuple of application name, provider, args, kwargs
-PROVIDERS = getattr(settings, 'STATUS_PROVIDERS', {
-    'health': (
-        ('ping', 'status.providers.health.ping', None, None),
-        ('databases', 'status.providers.health.databases', None, None),
-        ('caches', 'status.providers.health.caches', None, None),
-    ),
-    'stats': (
-        ('databases', 'status.providers.stats.databases', None, None),
-        ('code', 'status.providers.stats.code', None, None),
-    )
-})
+        # Mapping of resources to list of providers
+        # Each provider is a tuple of application name, provider, args, kwargs
+        cls.providers = getattr(module, 'STATUS_PROVIDERS', {
+            'health': (
+                ('ping', 'status.providers.health.ping', None, None),
+            ),
+            'stats': (
+                ('code', 'status.providers.stats.code', None, None),
+            )
+        })
 
-if CELERY_WORKERS:
-    PROVIDERS['health'] += (
-        ('celery', 'status.providers.health.celery', None, {'workers': CELERY_WORKERS}),
-    )
-    PROVIDERS['stats'] += (
-        ('celery', 'status.providers.stats.celery', None, {'workers': CELERY_WORKERS}),
-    )
+        # If there is celery workers then add celery providers
+        if cls.celery_workers:
+            cls._add_celery_providers()
+
+    @classmethod
+    def build_from_django(cls):
+        from django.conf import settings as django_settings
+
+        # Django debug settings.
+        cls.debug = getattr(django_settings, 'DEBUG', False)
+
+        # Django installed apps
+        cls.installed_apps = getattr(django_settings, 'INSTALLED_APPS', [])
+        cls.caches = getattr(django_settings, 'CACHES', {})
+
+        # Project path defined in Django settings
+        cls.base_dir = getattr(django_settings, 'BASE_DIR', None)
+
+        # Celery application
+        cls.celery_workers = getattr(django_settings, 'STATUS_CELERY_WORKERS', ())
+
+        # Mapping of resources to list of providers
+        # Each provider is a tuple of application name, provider, args, kwargs
+        cls.providers = getattr(django_settings, 'STATUS_PROVIDERS', {
+            'health': (
+                ('ping', 'status.providers.health.ping', None, None),
+                ('databases', 'status.providers.django.health.databases', None, None),
+                ('caches', 'status.providers.django.health.caches', None, None),
+            ),
+            'stats': (
+                ('databases', 'status.providers.django.stats.databases', None, None),
+                ('code', 'status.providers.stats.code', None, None),
+            )
+        })
+
+        # If there is celery workers then add celery providers
+        if cls.celery_workers:
+            cls._add_celery_providers()
+
+settings = Settings()
