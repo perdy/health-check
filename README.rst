@@ -2,7 +2,7 @@
 Django Status
 =============
 
-:Version: 2.2.0
+:Version: 2.2.1
 :Status: Production/Stable
 :Author: José Antonio Perdiguero López
 
