@@ -125,12 +125,15 @@ Previous Django command can be used in standalone mode as::
 
 Settings
 ========
-STATUS_CHECK_PROVIDERS
+Django status settings can be added directly to Django settings module or create an specific module for them. If a
+custom module (or class) is used, you must specify it through **DJANGO_STATUS_SETTINGS** environment variable.
+
+status_check_providers
 ----------------------
 List of additional check providers. Each provider consists in a tuple of name, function complete path, args and kwargs.
 Example::
 
-    STATUS_PROVIDERS = {
+    status_providers = {
         'resource': (
             ('test', 'application.module.test_function', [1, 2], {'foo': 'bar'}),
         )
@@ -138,7 +141,7 @@ Example::
 
 Default::
 
-    PROVIDERS = getattr(settings, 'STATUS_PROVIDERS', {
+    providers = getattr(settings, 'status_providers', {
         'health': (
             ('ping', 'status.providers.health.ping', None, None),
             ('databases', 'status.providers.django.health.databases', None, None),
@@ -150,11 +153,11 @@ Default::
         )
     }
 
-STATUS_CELERY_WORKERS
+status_celery_workers
 ---------------------
 List of hostname from celery workers to be checked. If any worker is defined, two additional providers listed previously
 will be added to default set.
 Default::
 
-    STATUS_CELERY_WORKERS = ()
+    status_celery_workers = ()
 
