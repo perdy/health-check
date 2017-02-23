@@ -53,21 +53,20 @@ class Settings:
     def import_settings(path):
         """
         Import a settings module that can be a module or an object.
+        To import a module, his full path should be specified: *package.settings*.
+        To import an object, his full path and object name should be specified: *project.settings:SettingsObject*.
 
         :param path: Settings full path.
         :return: Settings module or object.
         """
         try:
-            s = import_module(path)
-        except ImportError:
             try:
-                m, c = path.rsplit('.', 1)
+                m, c = path.rsplit(':', 1)
                 module = import_module(m)
                 s = getattr(module, c)
-            except (ValueError, ImportError):
-                s = None
-
-        if s is None:
+            except ValueError:
+                s = import_module(path)
+        except ImportError:
             raise ImportError("Settings not found '{}'".format(path))
 
         return s

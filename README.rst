@@ -128,6 +128,9 @@ Settings
 Health check settings can be added directly to Django settings module or create an specific module for them. If a
 custom module (or class) is used, you must specify it through **DJANGO_STATUS_SETTINGS** environment variable.
 
+To use a custom module for settings is necessary to specify the full path: *project.package.settings*. The same applies
+to objects: *project.package.settings:SettingsObject*.
+
 health_check_providers
 ----------------------
 List of additional check providers. Each provider consists in a tuple of name, function complete path, args and kwargs.
