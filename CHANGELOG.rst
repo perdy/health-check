@@ -1,5 +1,9 @@
 Changes
 =======
+v3.0.0 - 2017/02/23
+ * Move project from django-status to health-check.
+ * Fix some bugs related to react item keys.
+
 v2.3.0 - 2017/02/22
  * Specify settings through environment variable.
  * Change settings to lowercase.

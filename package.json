@@ -17,7 +17,7 @@
     }
   },
   "bugs": {
-    "url": "https://github.com/PeRDy/django-status/issues"
+    "url": "https://github.com/PeRDy/health-check/issues"
   },
   "dependencies": {
     "bootstrap": "^4.0.0-alpha",
@@ -31,12 +31,12 @@
     "react": "^15.3.1",
     "react-dom": "^15.3.1"
   },
-  "description": "Application that provides an API to check the status of some parts and some utilities like ping",
+  "description": "",
   "dest": {
     "apps": "./apps",
-    "css": "./status/css",
-    "dist": "./status",
-    "fonts": "./status/fonts",
+    "css": "./health_check/css",
+    "dist": "./health_check",
+    "fonts": "./health_check/fonts",
     "style": "./css/style.css"
   },
   "devDependencies": {
@@ -60,16 +60,17 @@
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
   },
-  "homepage": "https://github.com/PeRDy/django-status#readme",
+  "homepage": "https://github.com/PeRDy/health-check#readme",
   "keywords": [
     "django",
     "status",
-    "healthcheck",
+    "health",
+    "check",
     "api"
   ],
   "license": "GPL-3.0",
   "main": "js/app.js",
-  "name": "django-status",
+  "name": "health-check",
   "paths": {
     "apps": [
       "./js/*.jsx"
@@ -82,11 +83,11 @@
     "js": "./js/**/*.js",
     "jsx": "./js/**/*.jsx",
     "scss": "./scss/**/*.scss",
-    "static": "./status/static"
+    "static": "./health_check/static"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PeRDy/django-status.git"
+    "url": "git+https://github.com/PeRDy/health-check.git"
   },
   "version": "1.0.0"
 }

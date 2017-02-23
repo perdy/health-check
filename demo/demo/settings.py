@@ -6,6 +6,7 @@ import os
 
 PROJECT_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 APP_PATH = os.path.abspath(os.path.dirname(__file__))
+BASE_DIR = os.path.abspath(os.path.join(PROJECT_PATH, '..'))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -108,9 +109,9 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'demo',
-    'status',
+    'health_check',
 )
 
-STATUS_CELERY_WORKERS = (
+HEALTH_CHECK_CELERY_WORKERS = (
     'demo_worker',
 )

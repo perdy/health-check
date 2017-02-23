@@ -9,17 +9,17 @@
     "react": "^15.3.1"
   },
   "description": "Django application that adds health checks",
-  "homepage": "https://github.com/PeRDy/django-status",
+  "homepage": "https://github.com/PeRDy/health-check",
   "ignore": [
     "**/.*",
     "node_modules",
     "bower_components",
-    "status/static/vendor",
+    "health_check/static/vendor",
     "test",
     "tests"
   ],
   "license": "GPLv3",
   "main": "",
-  "name": "django-status",
+  "name": "health-check",
   "private": true
 }

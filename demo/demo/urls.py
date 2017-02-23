@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 from django.conf import settings
@@ -10,8 +11,8 @@ admin.autodiscover()
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
 
-    # Status urls
-    url(r'^status/', include('status.urls'))
+    # HealthCheck urls
+    url(r'^health_check/', include('health_check.urls'))
 ]
 
 if settings.DEBUG:

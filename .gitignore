@@ -27,7 +27,7 @@ var/
 *.egg
 *dist/
 *vendor/
-status/static/status/
+health_check/static/health_check/
 demo/static/
 ./static/
 node_modules/

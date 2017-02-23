@@ -52,7 +52,7 @@ class Dist(Command):
         if self.clean:
             shutil.rmtree('build', ignore_errors=True)
             shutil.rmtree('dist', ignore_errors=True)
-            shutil.rmtree('django_status.egg-info', ignore_errors=True)
+            shutil.rmtree('health_check.egg-info', ignore_errors=True)
 
         self.run_command('gulp')
         self.run_command('sdist')
@@ -85,23 +85,25 @@ _KEYWORDS = ' '.join([
     'database',
     'cache',
     'celery',
-    'status',
+    'health',
     'check'
 ])
 
 setup(
-    name='django-status',
+    name='health_check',
     version='2.3.0',
-    description='Application that provides an API to check the status of some parts and some utilities like ping.',
+    description='Health Check is an application that provides an API to check the health health_check of some parts '
+                'and some utilities like ping requests. This application can works as standalone or included in a '
+                'Django project.',
     long_description=_LONG_DESCRIPTION,
     author='José Antonio Perdiguero López',
     author_email='perdy.hh@gmail.com',
     maintainer='José Antonio Perdiguero López',
     maintainer_email='perdy.hh@gmail.com',
-    url='https://github.com/PeRDy/django-status',
-    download_url='https://github.com/PeRDy/django-status',
+    url='https://github.com/PeRDy/health-check',
+    download_url='https://github.com/PeRDy/health-check',
     packages=[
-        'status',
+        'health_check',
     ],
     include_package_data=True,
     install_requires=_REQUIRES,
@@ -129,7 +131,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'django_status = status.__main__:main',
+            'health_check = health_check.__main__:main',
         ],
     }
 )
