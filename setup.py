@@ -90,8 +90,8 @@ _KEYWORDS = ' '.join([
 ])
 
 setup(
-    name='health_check',
-    version='2.3.0',
+    name='health-check',
+    version='3.0.0',
     description='Health Check is an application that provides an API to check the health health_check of some parts '
                 'and some utilities like ping requests. This application can works as standalone or included in a '
                 'Django project.',

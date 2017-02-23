@@ -2,7 +2,7 @@
 Health Check
 ============
 
-:Version: 2.3.0
+:Version: 3.0.0
 :Status: Production/Stable
 :Author: José Antonio Perdiguero López
 
