@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 import sys
 
-from health_check.commands import HealthCheckCommand
+from health_check.commands import HealthCheckMain
 
 __all__ = ['main']
 
 
 def main():
-    return HealthCheckCommand().run()
+    return HealthCheckMain().run()
 
 
 if __name__ == '__main__':

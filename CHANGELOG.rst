@@ -1,5 +1,11 @@
 Changes
 =======
+v3.1.1 - 2017/06/23
+ * Minor bug fixing.
+
+v3.1.0 - 2017/06/23
+ * Improved and more flexible django command.
+
 v3.0.0 - 2017/02/23
  * Move project from django-status to health-check.
  * Fix some bugs related to react item keys.

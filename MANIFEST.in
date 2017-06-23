@@ -3,7 +3,8 @@ include CHANGELOG
 include README.rst
 include CONTRIBUTORS.rst
 include requirements.txt
-include runtests.py
+include requirements-tests.txt
+include .prospector.yaml
 graft health_check
 prune health_check/static/scss
 prune health_check/static/js

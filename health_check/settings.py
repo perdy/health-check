@@ -47,7 +47,14 @@ class Settings:
         self.installed_apps = ()
         self.caches = {}
         self.celery_workers = ()
-        self.providers = {'health': (), 'stats': ()}
+        self.providers = {
+            'health': (
+                ('ping', 'health_check.providers.health.ping', None, None),
+            ),
+            'stats': (
+                ('code', 'health_check.providers.stats.code', None, None),
+            )
+        }
 
     @staticmethod
     def import_settings(path):

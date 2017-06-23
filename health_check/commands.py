@@ -1,116 +1,90 @@
 # -*- coding: utf-8 -*-
 import json
+import os
 import sys
-from argparse import ArgumentParser
-from typing import Dict, Any
 
 import yaml
+from clinner.command import command
+from clinner.exceptions import ImproperlyConfigured
+from clinner.run import Main
 
 from health_check.providers import Resource
-from health_check.settings import settings
+
+OUTPUT_FORMAT_JSON = 'json'
+OUTPUT_FORMAT_YAML = 'yaml'
+OUTPUT_FORMAT_CHOICES = (OUTPUT_FORMAT_JSON, OUTPUT_FORMAT_YAML)
 
 
-class HealthCheckCommand:
+def _get_resource_filtered(resource_name, providers):
     """
-    Show health_check to console.
+    Get a resource by name and filter providers result with given list.
+    
+    :param resource_name: Resource name.
+    :param providers: Providers list.
+    :return: All providers info of given result.
     """
-    CHECK_HEALTH = 'health'
-    CHECK_STATS = 'stats'
+    resource = Resource(resource_name)
 
-    OUTPUT_FORMAT_JSON = 'json'
-    OUTPUT_FORMAT_YAML = 'yaml'
-    OUTPUT_FORMAT_CHOICES = (OUTPUT_FORMAT_JSON, OUTPUT_FORMAT_YAML)
+    data = resource()
 
-    description = 'HealthCheck command that provides a common entry point for running different checks providers'
+    if providers and data:
+        data = {k: v for k, v in data.items() if k in providers}
 
-    def __init__(self, parse_args=True, stdout=sys.stdout, stderr=sys.stderr):
-        """
-        Command for running producer, consumer and scheduler processes along with some other utilities.
+    return data
 
-        :param parse_args: If true, parse sys args.
-        :param stdout: Standard output.
-        :param stderr: Standard error.
-        """
-        self.args = self.parse_arguments() if parse_args else {}
-        self.stdout = stdout
-        self.stderr = stderr
 
-    def add_arguments(self, parser: ArgumentParser, parser_class=None):
-        subparsers_kwargs = {}
-        if parser_class:
-            subparsers_kwargs['parser_class'] = lambda **kwargs: parser_class(self, **kwargs)
-        else:
-            parser.add_argument('-s', '--settings', help='Settings module')
+def _print_resource(data, output_format):
+    """
+    Prints resource info using given format.
+    
+    :param data: Resource info.
+    :param output_format: Output format.
+    """
+    if output_format == OUTPUT_FORMAT_JSON:
+        output = json.dumps(data)
+    else:
+        output = yaml.safe_dump(data, default_flow_style=False)
 
-        subparsers = parser.add_subparsers(title='check', description='HealthCheck checks',
-                                           dest='check', **subparsers_kwargs)
-        subparsers.required = True
+    print(output)
 
-        # Health check
-        parser_health = subparsers.add_parser(self.CHECK_HEALTH, help='Health checks')
-        parser_health.add_argument(
-            '-f', '--output_format', type=str, choices=self.OUTPUT_FORMAT_CHOICES, default=self.OUTPUT_FORMAT_YAML,
-            help='Output format'
-        )
-        parser_health.add_argument(
-            '-e', '--error_on_fail', action='store_true', default=False, help='Output format'
-        )
-        parser_health.set_defaults(func=self.health)
 
-        # Stats
-        parser_stats = subparsers.add_parser(self.CHECK_STATS, help='Components stats')
-        parser_stats.add_argument(
-            '-f', '--output_format', type=str, choices=self.OUTPUT_FORMAT_CHOICES, default=self.OUTPUT_FORMAT_YAML,
-            help='Output format'
-        )
-        parser_stats.set_defaults(func=self.stats)
+@command(args=((('-e', '--error-on-fail'), {'help': 'Returns error code if a health provider fails',
+                                            'action': 'store_true', 'default': False}),
+               (('-f', '--output-format'), {
+                   'help': 'Output format', 'choices': OUTPUT_FORMAT_CHOICES,
+                   'default': OUTPUT_FORMAT_YAML
+               }),
+               (('provider',), {'help': 'Providers to be used for checking', 'nargs': '*'})),
+         parser_opts={'help': 'Run health providers'})
+def health(*args, **kwargs):
+    data = _get_resource_filtered('health', kwargs.get('provider'))
 
-    def parse_arguments(self) -> Dict[str, Any]:
-        """
-        Parse sys args and transform it into a dict.
+    _print_resource(data, kwargs['output_format'])
 
-        :return: Arguments parsed in dict form.
-        """
-        parser = ArgumentParser(description=self.description)
-        self.add_arguments(parser)
-        return {k: v for k, v in vars(parser.parse_args()).items()}
+    if kwargs['error_on_fail'] and not all([value for provider in data.values() for value in provider.values()]):
+        sys.exit(1)
 
-    def health(self, output_format, *args, **kwargs):
-        resource = Resource(kwargs['check'])
 
-        data = resource()
+@command(args=((('-f', '--output-format'), {'help': 'Output format', 'choices': OUTPUT_FORMAT_CHOICES,
+                                            'default': OUTPUT_FORMAT_YAML}),
+               (('provider',), {'help': 'Providers to be used for checking', 'nargs': '*'})),
+         parser_opts={'help': 'Run stats providers'})
+def stats(*args, **kwargs):
+    data = _get_resource_filtered('stats', kwargs.get('provider'))
 
-        if output_format == self.OUTPUT_FORMAT_JSON:
-            output = json.dumps(data)
-        else:
-            output = yaml.safe_dump(data, default_flow_style=False)
+    _print_resource(data, kwargs['output_format'])
 
-        self.stdout.write(output)
 
-        if kwargs['error_on_fail'] and not all([value for provider in data.values() for value in provider.values()]):
-            sys.exit(1)
+class HealthCheckMain(Main):
+    """
+    Command for running producer, consumer and scheduler processes along with some other utilities. This acts as a
+    Command Line Interface for Task dispatcher.
+    """
+    description = 'Health check command that provides a common entry point for running the different checks'
 
-    def stats(self, output_format, *args, **kwargs):
-        resource = Resource(kwargs['check'])
+    def inject_app_settings(self):
+        if self.settings:
+            os.environ['HEALTH_CHECK_SETTINGS'] = self.settings
 
-        if output_format == self.OUTPUT_FORMAT_JSON:
-            output = json.dumps(resource())
-        else:
-            output = yaml.safe_dump(resource(), default_flow_style=False)
-
-        self.stdout.write(output)
-
-    def run(self, **kwargs):
-        """
-        Command entrypoint.
-        """
-        kwargs = kwargs or self.args
-
-        if not kwargs:
-            raise ValueError('Arguments must be passed or parsed previously')
-
-        if kwargs['settings']:
-            settings.build_from_module(module=kwargs['settings'])
-
-        command = kwargs['func']
-        return command(**kwargs)
+        if 'HEALTH_CHECK_SETTINGS' not in os.environ:
+            raise ImproperlyConfigured('Settings not defined')

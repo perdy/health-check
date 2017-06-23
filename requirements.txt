@@ -1,2 +1,3 @@
 GitPython>=1.0
 pyyaml>=3.12
+clinner>=1.2

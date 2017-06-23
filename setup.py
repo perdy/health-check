@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import os
-import shutil
-import subprocess
 import sys
 
 from pip.download import PipSession
 from pip.req import parse_requirements as requirements
-from setuptools import setup, Command
+from setuptools import setup
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -19,48 +17,9 @@ def parse_requirements(req_file):
     return [str(req.req) for req in requirements(req_file, session=PipSession())]
 
 
-class Gulp(Command):
-    description = 'Run gulp'
-    user_options = [
-        ('task=', 't', 'gulp task')
-    ]
-
-    def initialize_options(self):
-        self.task = 'dist'
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        subprocess.call(['gulp', self.task])
-
-
-class Dist(Command):
-    description = 'Generate static files and create dist package'
-    user_options = [
-        ('clean', 'c', 'clean dist directories before build (default: false)')
-    ]
-    boolean_options = ['clean']
-
-    def initialize_options(self):
-        self.clean = False
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        if self.clean:
-            shutil.rmtree('build', ignore_errors=True)
-            shutil.rmtree('dist', ignore_errors=True)
-            shutil.rmtree('health_check.egg-info', ignore_errors=True)
-
-        self.run_command('gulp')
-        self.run_command('sdist')
-        self.run_command('bdist_wheel')
-
 # Read requirements
 _requirements_file = os.path.join(BASE_DIR, 'requirements.txt')
-_tests_requirements_file = os.path.join(BASE_DIR, 'tests/requirements.txt')
+_tests_requirements_file = os.path.join(BASE_DIR, 'requirements-tests.txt')
 _REQUIRES = parse_requirements(_requirements_file)
 _TESTS_REQUIRES = parse_requirements(_tests_requirements_file)
 
@@ -91,7 +50,7 @@ _KEYWORDS = ' '.join([
 
 setup(
     name='health-check',
-    version='3.0.4',
+    version='3.1.0',
     description='Health Check is an application that provides an API to check the health health_check of some parts '
                 'and some utilities like ping requests. This application can works as standalone or included in a '
                 'Django project.',
@@ -113,22 +72,15 @@ setup(
             'setuptools',
             'pip',
             'wheel',
-            'prospector',
             'twine',
             'bumpversion',
             'pre-commit',
-            'nose'
-            'tox',
-        ]
+        ] + _TESTS_REQUIRES
     },
     license='GPLv3',
     zip_safe=False,
     keywords=_KEYWORDS,
     classifiers=_CLASSIFIERS,
-    cmdclass={
-        'gulp': Gulp,
-        'dist': Dist,
-    },
     entry_points={
         'console_scripts': [
             'health_check = health_check.__main__:main',
