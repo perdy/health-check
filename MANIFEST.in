@@ -4,10 +4,9 @@ include README.rst
 include CONTRIBUTORS.rst
 include requirements.txt
 include runtests.py
+graft health_check
 prune health_check/static/scss
 prune health_check/static/js
 prune demo
-graft health_check
-graft tests
 global-exclude __pycache__
 global-exclude *.py[co]
