@@ -8,6 +8,7 @@ from clinner.command import command
 from clinner.exceptions import ImproperlyConfigured
 from clinner.run import Main
 
+from health_check.settings import settings
 from health_check.providers import Resource
 
 OUTPUT_FORMAT_JSON = 'json'
@@ -88,3 +89,5 @@ class HealthCheckMain(Main):
 
         if 'HEALTH_CHECK_SETTINGS' not in os.environ:
             raise ImproperlyConfigured('Settings not defined')
+
+        settings.build_from_module(os.environ['HEALTH_CHECK_SETTINGS'])

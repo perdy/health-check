@@ -160,4 +160,5 @@ class Settings:
         if self.celery_workers:
             self._add_celery_providers()
 
+
 settings = Settings()
