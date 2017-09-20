@@ -52,7 +52,7 @@ htmlcov/
 nosetests.xml
 coverage.xml
 *,cover
-.unittests_report/
+.test_report/
 
 # Translations
 *.mo

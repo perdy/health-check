@@ -43,10 +43,10 @@ class Provider:
         :return: Results after evaluates provider.
         """
         if not args:
-            args = self.args
+            args = self.args  # pragma: no cover
 
         if not kwargs:
-            kwargs = self.kwargs
+            kwargs = self.kwargs  # pragma: no cover
 
         return self.provider(*args, **kwargs)
 

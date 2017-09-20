@@ -1,6 +1,6 @@
-============
+************
 Health Check
-============
+************
 
 :Version: 3.1.2
 :Status: Production/Stable
@@ -9,6 +9,19 @@ Health Check
 Health Check is an application that provides an API to check the health status of some parts and some utilities like
 ping requests. This application can works as standalone or included in a Django project.
 
+This application defines the following terms:
+
+Provider
+    Function that does a quick check or stats gathering and returns a json serializable value, such as dict, list or
+    simple types.
+
+Resource
+    A service or functionality whose status needs to be known.
+
+Said this, providers are grouped by resources. So you can use resource as a simple group, or as a component of your
+application. E.g: A resource that represents your database with some checks over it, such as simple ping, check if your
+application tables are created, if it contains data...
+
 Quick start
 ===========
 
@@ -16,16 +29,15 @@ Quick start
 
     pip install health-check
 
-
-#. Add *PROJECT_PATH* to your django settings module.
-#. Add *health_check* to your **INSTALLED_APPS** settings like this::
+#. *(Django)* Add *PROJECT_PATH* to your django settings module.
+#. *(Django)* Add *health_check* to your **INSTALLED_APPS** settings like this::
 
     INSTALLED_APPS = (
         ...
         'health_check',
     )
 
-#. Add **Health Check** urls to your project urls::
+#. *(Django)* Add **Health Check** urls to your project urls::
 
     urlpatterns = [
         ...
@@ -71,8 +83,47 @@ Code
     Source code stats such as current active branch, last commit, if debug is active...
     URL: /api/stats/code
 
+Run providers
+=============
+The main goal of this application is to provide an easy way to run checks over defined resources, so there are different
+ways to do it.
+
+Command
+-------
+Health Check provides a command to query current health of a resource. This command can be call as::
+
+    health_check <resource> [options]
+
+To get current status of health checks, and exit with an error if some check is failing::
+
+    health_check health -e
+
+Each resource has its own set of options that can be displayed through command help::
+
+    health_check -h
+
+Code
+----
+To run all providers of a specific resource::
+
+    from health_check.providers import Resource
+
+    resource = Resource('resource_name')
+    providers_result = resource()
+
+A single provider can be executed::
+
+    from health_check.providers import Provider
+
+    provider = Provider('path.to.provider_function')
+    provider_result = provider()
+
+Django
+======
+Health check adds some useful behavior to your Django application.
+
 Health Check website
-=====================
+--------------------
 A website that shows Health Check data is available in this application. It's possible access to follow URLs to get a
 detailed view of your system health status. Those three pages will show results of providers configured (as explained in
 settings section)::
@@ -82,7 +133,7 @@ settings section)::
     http://www.website.com/health/stats/
 
 Health Check API
-=================
+----------------
 Health Check API can be used as a standalone application including only their urls::
 
     urlpatterns = [
@@ -104,29 +155,15 @@ For last, there is a root view that will return the health status of all provide
     http://your_domain/health/api
 
 Django management commands
-==========================
-Health Check provides a django management command to query current health of a resource. This command can be call as::
+--------------------------
+Previous command can be used as Django management command::
 
     python manage.py health_check <resource> [options]
-
-To get current status of health checks, and exit with an error if some check is failing::
-
-    python manage.py health_check health -e
-
-Each resource has its own set of options that can be displayed through command help::
-
-    python manage.py health_check -h
-
-Command
-=======
-Previous Django command can be used in standalone mode as::
-
-    health_check <resource> [options]
 
 Settings
 ========
 Health check settings can be added directly to Django settings module or create an specific module for them. If a
-custom module (or class) is used, you must specify it through **DJANGO_STATUS_SETTINGS** environment variable.
+custom module (or class) is used, you must specify it through **HEALTH_CHECK_SETTINGS** environment variable.
 
 To use a custom module for settings is necessary to specify the full path: *project.package.settings*. The same applies
 to objects: *project.package.settings:SettingsObject*.
@@ -157,7 +194,7 @@ Default::
     }
 
 health_check_celery_workers
----------------------
+---------------------------
 List of hostname from celery workers to be checked. If any worker is defined, two additional providers listed previously
 will be added to default set.
 Default::
