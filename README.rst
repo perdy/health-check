@@ -25,19 +25,25 @@ application tables are created, if it contains data...
 Quick start
 ===========
 
-#. Install this package using pip::
+1. Install this package using pip:
+
+.. code:: bash
 
     pip install health-check
 
-#. *(Django)* Add *PROJECT_PATH* to your django settings module.
-#. *(Django)* Add *health_check* to your **INSTALLED_APPS** settings like this::
+2. *(Django)* Add *PROJECT_PATH* to your django settings module.
+3. *(Django)* Add *health_check* to your **INSTALLED_APPS** settings like this:
+
+.. code:: python
 
     INSTALLED_APPS = (
         ...
         'health_check',
     )
 
-#. *(Django)* Add **Health Check** urls to your project urls::
+4. *(Django)* Add **Health Check** urls to your project urls:
+
+.. code:: python
 
     urlpatterns = [
         ...
@@ -48,7 +54,9 @@ Check Providers
 ===============
 Health Check provides a mechanism to add new custom check functions through **check providers**. Each check provider
 will generate a new API method with an URL that uses the name of the provider. These functions must accept \*args and
-\*\*kwargs and will return a JSON-serializable object through json.dumps() method, for example a ping function::
+\*\*kwargs and will return a JSON-serializable object through json.dumps() method, for example a ping function:
+
+.. code:: python
 
     def ping(*args, **kwargs):
         return {'pong': True}
@@ -57,31 +65,38 @@ By default **Health Check** provides the follow checks:
 
 Ping
     A ping to application.
-    URL: /api/health/ping
+    
+    URL: `/api/health/ping`
 
 Databases
     Check if databases are running.
-    URL: /api/health/databases
+    
+    URL: `/api/health/databases`
 
 Caches
     Check if caches are running.
-    URL: /api/health/caches
+    
+    URL: `/api/health/caches`
 
 Celery
     Check if celery workers defined in settings are running.
-    URL: /api/health/celery
+    
+    URL: `/api/health/celery`
 
 Databases stats
     Show stats for all databases.
-    URL: /api/stats/databases
+    
+    URL: `/api/stats/databases`
 
 Celery stats
     Show celery worker stats.
-    URL: /api/stats/celery
+    
+    URL: `/api/stats/celery`
 
 Code
     Source code stats such as current active branch, last commit, if debug is active...
-    URL: /api/stats/code
+    
+    URL: `/api/stats/code`
 
 Run providers
 =============
@@ -90,28 +105,44 @@ ways to do it.
 
 Command
 -------
-Health Check provides a command to query current health of a resource. This command can be call as::
+Health Check provides a command to query current health of a resource. This command can be call as:
 
-    health_check <resource> [options]
+.. code:: bash
 
-To get current status of health checks, and exit with an error if some check is failing::
+    health_check {resource} [options]
+    
+Call a specific provider from a resource:
+
+.. code:: bash
+
+    health_check {resource} {provider} [options]
+
+To get current status of health checks, and exit with an error if some check is failing:
+
+.. code:: bash
 
     health_check health -e
 
-Each resource has its own set of options that can be displayed through command help::
+Each resource has its own set of options that can be displayed through command help:
+
+.. code:: bash
 
     health_check -h
 
 Code
 ----
-To run all providers of a specific resource::
+To run all providers of a specific resource:
+
+.. code:: python
 
     from health_check.providers import Resource
 
     resource = Resource('resource_name')
     providers_result = resource()
 
-A single provider can be executed::
+A single provider can be executed:
+
+.. code:: python
 
     from health_check.providers import Provider
 
@@ -134,7 +165,9 @@ settings section)::
 
 Health Check API
 ----------------
-Health Check API can be used as a standalone application including only their urls::
+Health Check API can be used as a standalone application including only their urls:
+
+.. code:: python
 
     urlpatterns = [
         ...
@@ -156,9 +189,11 @@ For last, there is a root view that will return the health status of all provide
 
 Django management commands
 --------------------------
-Previous command can be used as Django management command::
+Previous command can be used as Django management command:
 
-    python manage.py health_check <resource> [options]
+.. code:: bash
+
+    python manage.py health_check {resource} {provider} [options]
 
 Settings
 ========
@@ -171,7 +206,10 @@ to objects: *project.package.settings:SettingsObject*.
 health_check_providers
 ----------------------
 List of additional check providers. Each provider consists in a tuple of name, function complete path, args and kwargs.
-Example::
+
+Example:
+
+.. code:: python
 
     health_check_providers = {
         'resource': (
@@ -179,7 +217,9 @@ Example::
         )
     }
 
-Default::
+Default:
+
+.. code:: python
 
     providers = getattr(settings, 'health_check_providers', {
         'health': (
@@ -197,7 +237,10 @@ health_check_celery_workers
 ---------------------------
 List of hostname from celery workers to be checked. If any worker is defined, two additional providers listed previously
 will be added to default set.
-Default::
+
+Default:
+
+.. code:: python
 
     health_check_celery_workers = ()
 
