@@ -26,10 +26,7 @@ def _get_resource_filtered(resource_name, providers):
     """
     resource = Resource(resource_name)
 
-    data = resource()
-
-    if providers and data:
-        data = {k: v for k, v in data.items() if k in providers}
+    data = resource(providers)
 
     return data
 
