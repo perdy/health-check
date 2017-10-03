@@ -69,10 +69,20 @@ class Resource:
         except KeyError:
             raise ValueError("Resource doesn't exists: %s" % (self.name,))
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, providers=None, *args, **kwargs):
         """
-        Return results from all providers of this resource.
+        Return results from specific providers of this resource. If no providers are specified, return results from
+        all defined providers in the resource.
 
+        :param providers: Specific providers to check.
         :return: Results after evaluate each provider.
         """
-        return {name: provider() for name, provider in self.providers.items()}
+        if providers:
+            try:
+                result = {provider: self.providers[provider]() for provider in providers}
+            except KeyError as e:
+                raise ValueError("Provider %s does not exists in resource %s", e, self.name)
+        else:
+            result = {name: provider() for name, provider in self.providers.items()}
+
+        return result

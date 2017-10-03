@@ -72,6 +72,19 @@ class TestResource:
 
         assert result == expected_result
 
+    @pytest.mark.high
+    @pytest.mark.provider
+    def test_resource_filter_providers(self, providers, settings_mock):
+        expected_result = {
+            'bar': {'bar': False},
+        }
+        settings_mock.providers = providers
+        resource = Resource('foobar')
+
+        result = resource(['bar'])
+
+        assert result == expected_result
+
     @pytest.mark.low
     @pytest.mark.provider
     def test_resource_wrong(self):

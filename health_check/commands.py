@@ -3,6 +3,9 @@ import json
 import os
 import sys
 
+import logging
+import warnings
+
 import yaml
 from clinner.command import command
 from clinner.exceptions import ImproperlyConfigured
@@ -15,23 +18,7 @@ OUTPUT_FORMAT_JSON = 'json'
 OUTPUT_FORMAT_YAML = 'yaml'
 OUTPUT_FORMAT_CHOICES = (OUTPUT_FORMAT_JSON, OUTPUT_FORMAT_YAML)
 
-
-def _get_resource_filtered(resource_name, providers):
-    """
-    Get a resource by name and filter providers result with given list.
-    
-    :param resource_name: Resource name.
-    :param providers: Providers list.
-    :return: All providers info of given result.
-    """
-    resource = Resource(resource_name)
-
-    data = resource()
-
-    if providers and data:
-        data = {k: v for k, v in data.items() if k in providers}
-
-    return data
+logger = logging.getLogger('cli')
 
 
 def _print_resource(data, output_format):
@@ -46,7 +33,7 @@ def _print_resource(data, output_format):
     else:
         output = yaml.safe_dump(data, default_flow_style=False)
 
-    print(output)
+    logger.info(output)
 
 
 @command(args=((('-e', '--error-on-fail'), {'help': 'Returns error code if a health provider fails',
@@ -58,7 +45,9 @@ def _print_resource(data, output_format):
                (('provider',), {'help': 'Providers to be used for checking', 'nargs': '*'})),
          parser_opts={'help': 'Run health providers'})
 def health(*args, **kwargs):
-    data = _get_resource_filtered('health', kwargs.get('provider'))
+    warnings.warn('This command is deprecated. Use "check health" command instead.', DeprecationWarning)
+
+    data = Resource('health')(kwargs.get('provider'))
 
     _print_resource(data, kwargs['output_format'])
 
@@ -71,9 +60,29 @@ def health(*args, **kwargs):
                (('provider',), {'help': 'Providers to be used for checking', 'nargs': '*'})),
          parser_opts={'help': 'Run stats providers'})
 def stats(*args, **kwargs):
-    data = _get_resource_filtered('stats', kwargs.get('provider'))
+    warnings.warn('This command is deprecated. Use "check stats" command instead.', DeprecationWarning)
+
+    data = Resource('stats')(kwargs.get('provider'))
 
     _print_resource(data, kwargs['output_format'])
+
+
+@command(args=((('-e', '--error-on-fail'), {'help': 'Returns error code if a health provider fails',
+                                            'action': 'store_true', 'default': False}),
+               (('-f', '--output-format'), {
+                   'help': 'Output format', 'choices': OUTPUT_FORMAT_CHOICES,
+                   'default': OUTPUT_FORMAT_YAML
+               }),
+               (('resource',), {'help': 'Resource to check'}),
+               (('provider',), {'help': 'Providers to be used for checking', 'nargs': '*'})),
+         parser_opts={'help': 'Run health providers'})
+def check(*args, **kwargs):
+    data = Resource(kwargs.get('resource'))(kwargs.get('provider'))
+
+    _print_resource(data, kwargs['output_format'])
+
+    if kwargs['error_on_fail'] and not all([value for provider in data.values() for value in provider.values()]):
+        sys.exit(1)
 
 
 class HealthCheckMain(Main):
