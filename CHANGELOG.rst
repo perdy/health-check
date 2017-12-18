@@ -1,5 +1,8 @@
 Changes
 =======
+v3.3.0 - 2017/12/18
+ * Compatibility with Django 2.0
+
 v3.1.1 - 2017/06/23
  * Minor bug fixing.
 

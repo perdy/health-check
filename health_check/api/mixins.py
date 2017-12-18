@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-from django.core.urlresolvers import reverse
+import django
+
+if django.VERSION < (2, 0):
+    from django.core.urlresolvers import reverse
+else:
+    from django.urls import reverse
 
 
 class ProviderMixin:
