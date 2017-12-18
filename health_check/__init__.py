@@ -2,7 +2,7 @@
 """
 Django HealthCheck application.
 """
-__version__ = '3.2.0'
+__version__ = '3.3.0'
 __license__ = 'GPLv3'
 
 __author__ = 'José Antonio Perdiguero López'
