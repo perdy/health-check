@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import argparse
 import json
 import os
 import sys
@@ -92,9 +93,12 @@ class HealthCheckMain(Main):
     """
     description = 'Health check command that provides a common entry point for running the different checks'
 
+    def add_arguments(self, parser: argparse.ArgumentParser):
+        parser.add_argument('-s', '--settings', help='HealthCheck settings module')
+
     def inject_app_settings(self):
         if self.args.settings:
-            os.environ['HEALTH_CHECK_SETTINGS'] = self.settings
+            os.environ['HEALTH_CHECK_SETTINGS'] = self.args.settings
 
         if 'HEALTH_CHECK_SETTINGS' not in os.environ:
             raise ImproperlyConfigured('Settings not defined')
