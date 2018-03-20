@@ -93,7 +93,7 @@ class HealthCheckMain(Main):
     description = 'Health check command that provides a common entry point for running the different checks'
 
     def inject_app_settings(self):
-        if self.settings:
+        if self.args.settings:
             os.environ['HEALTH_CHECK_SETTINGS'] = self.settings
 
         if 'HEALTH_CHECK_SETTINGS' not in os.environ:
