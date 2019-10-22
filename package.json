@@ -47,7 +47,7 @@
     "browserify": "^13.1.0",
     "browserify-shim": "^3.8.12",
     "del": "^2.2.2",
-    "eslint": "^3.4.0",
+    "eslint": "^6.5.1",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.0",
     "gulp-eslint": "^3.0.1",
