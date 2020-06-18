@@ -211,7 +211,7 @@ Example:
 
 .. code:: python
 
-    health_check_providers = {
+    HEALTH_CHECK_PROVIDERS = {
         'resource': (
             ('test', 'application.module.test_function', [1, 2], {'foo': 'bar'}),
         )
@@ -221,7 +221,7 @@ Default:
 
 .. code:: python
 
-    providers = getattr(settings, 'health_check_providers', {
+    providers = getattr(settings, 'HEALTH_CHECK_PROVIDERS', {
         'health': (
             ('ping', 'health_check.providers.health.ping', None, None),
             ('databases', 'health_check.providers.django.health.databases', None, None),
